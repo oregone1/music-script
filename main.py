@@ -14,14 +14,12 @@ _input = {}
 user_input = ''
 extension_list = data['config']['recognized-files']
 
-os.chdir('/')
+os.chdir(music_dir)
 
 def get_dir_contents(directory):
     file_list.clear()
     for file in os.listdir(directory):
         file_list.append(file)
-
-    #return(file_list)
 
 def list_files(file_list):
     _input.clear()
@@ -43,15 +41,13 @@ while run:
                 for extension in extension_list:
                     if extension in music_dir:
                         update = False
-                    else:
-                        pass # TODO: log
+
             else:
-                #print('error') # TODO: log
                 split_dir = music_dir.split('/')
                 del split_dir[-1]
-                #    print(split_dir)
+                #debug    print(split_dir)
                 music_dir = '/'.join(split_dir)
-                #    print(music_dir) # TODO: clean this up
+                #debug    print(music_dir)
         else:
             try:
                 os.system(f'ffplay \'{music_dir}\' -autoexit -nodisp')
@@ -63,4 +59,11 @@ while run:
                 update = True
 
     except:
-        pass # TODO: log error
+        try:
+            if user_input == 'exit':
+                run = False
+                print('test')
+        except:
+            print('error')
+
+print('exiting')
