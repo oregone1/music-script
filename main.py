@@ -62,7 +62,6 @@ while run:
         try:
             if user_input == 'exit':
                 run = False
-                print('test')
         except:
             print('error')
 
