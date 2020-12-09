@@ -1,7 +1,6 @@
 {
-  "config": [
-    {
-      "music_dir": "/home/henry/Music/"
+  "config": {
+      "music_dir": "/home/henry/Music/",
+      "prompt-name": "cool prompt: "
     }
-  ]
 }
