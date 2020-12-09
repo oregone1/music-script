@@ -1,6 +1,11 @@
 {
   "config": {
-      "music_dir": "/home/henry/Music/",
-      "prompt-name": "cool prompt: "
+      "music-dir": "/home/henry/Music",
+      "prompt-name": "cool prompt: ",
+      "recognized-files": [
+        ".mp3",
+        ".webm",
+        ".wav"
+      ]
     }
 }
