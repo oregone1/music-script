@@ -6,7 +6,6 @@ import os
 with open('config.json', 'r') as f:
     data = json.load(f)
 
-update = True
 run = True
 music_dir = data['config']['music-dir']
 file_list = []
@@ -29,34 +28,32 @@ def list_files(file_list):
     print('-----------------------------')
     return(_input)
 
+def play(music_dir):
+    os.system(f'ffplay \'{music_dir}\' -autoexit -nodisp')
+
 while run:
     try:
-        if update:
-            music_dir2 = music_dir
-            get_dir_contents(music_dir)
-            list_files(file_list)
-            user_input = input(data['config']['prompt-name'])
-            if len(user_input) > 0:
-                music_dir += '/' + _input[int(user_input)]
-                for extension in extension_list:
-                    if extension in music_dir:
-                        update = False
+        get_dir_contents(music_dir)
+        list_files(file_list)
+        user_input = input(data['config']['prompt-name'])
+        os.system('clear')
+        music_dir2 = music_dir
+        if len(user_input) > 0:
+            music_dir += '/' + _input[int(user_input)]
+            for extension in extension_list:
+                if extension in music_dir:
+                    if ',' in user_input:
+                        for file in user_input.split(','):
+                            play(file)
+                    play(music_dir)
+                    music_dir = music_dir2
 
-            else:
-                split_dir = music_dir.split('/')
-                del split_dir[-1]
-                #debug    print(split_dir)
-                music_dir = '/'.join(split_dir)
-                #debug    print(music_dir)
         else:
-            try:
-                os.system(f'ffplay \'{music_dir}\' -autoexit -nodisp')
-                music_dir = music_dir2
-                update = True
-            except:
-                print('error: file could not be played')
-                music_dir = music_dir2
-                update = True
+            split_dir = music_dir.split('/')
+            del split_dir[-1]
+            #debug    print(split_dir)
+            music_dir = '/'.join(split_dir)
+            #debug    print(music_dir)
 
     except:
         try:
