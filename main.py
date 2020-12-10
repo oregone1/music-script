@@ -53,9 +53,14 @@ while run:
         try:
             if user_input == 'exit':
                 run = False
-            if 'play' in user_input:
+            elif 'play' in user_input:
                 play(music_dir + '/' + _input[int(user_input.replace('play', ''))])
-                run = False
+            elif 'list' in user_input:
+                index = user_input.replace('list', '').split(',')
+                print(index)
+                for num in index:
+                    play(music_dir + '/' + _input[int(num)])
+
         except:
             print('error')
 
