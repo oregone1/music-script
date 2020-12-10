@@ -33,6 +33,7 @@ def play(music_dir):
 
 while run:
     try:
+        os.system('clear')
         get_dir_contents(music_dir)
         list_files(file_list)
         user_input = input(data['config']['prompt-name'])
@@ -40,13 +41,6 @@ while run:
         music_dir2 = music_dir
         if len(user_input) > 0:
             music_dir += '/' + _input[int(user_input)]
-            for extension in extension_list:
-                if extension in music_dir:
-                    if ',' in user_input:
-                        for file in user_input.split(','):
-                            play(file)
-                    play(music_dir)
-                    music_dir = music_dir2
 
         else:
             split_dir = music_dir.split('/')
@@ -58,6 +52,9 @@ while run:
     except:
         try:
             if user_input == 'exit':
+                run = False
+            if 'play' in user_input:
+                play(music_dir + '/' + _input[int(user_input.replace('play', ''))])
                 run = False
         except:
             print('error')
