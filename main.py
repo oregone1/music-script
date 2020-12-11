@@ -29,7 +29,7 @@ def list_files(file_list):
     return(_input)
 
 def play(music_dir):
-    os.system(f'ffplay \'{music_dir}\' -autoexit -nodisp')
+    os.system(f'mpv --no-video --speed={data["config"]["playback-speed"]} \'{music_dir}\'')
 
 while run:
     try:
@@ -60,6 +60,9 @@ while run:
                 print(index)
                 for num in index:
                     play(music_dir + '/' + _input[int(num)])
+            else:
+                print('error') # detailed error handling
+                break
 
         except:
             print('error')
