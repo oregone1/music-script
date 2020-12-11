@@ -12,8 +12,7 @@ file_list = []
 _input = {}
 user_input = ''
 extension_list = data['config']['recognized-files']
-
-os.chdir(music_dir)
+real_dir = os.path.realpath('config.json')
 
 def get_dir_contents(directory):
     file_list.clear()
@@ -33,7 +32,8 @@ def play(music_dir):
 
 while run:
     try:
-        os.system('clear')
+        os.chdir(music_dir)
+        print('-----------------------------')
         get_dir_contents(music_dir)
         list_files(file_list)
         user_input = input(data['config']['prompt-name'])
@@ -60,11 +60,24 @@ while run:
                 print(index)
                 for num in index:
                     play(music_dir + '/' + _input[int(num)])
+
+            elif 'config' in user_input:
+                if len(user_input) == 6:
+                    for option in data['config']:
+                        print(' ',option)
+                elif 'edit' in user_input:
+                    property = user_input.replace(f'config edit ', '')
+                    property = property.split(' ')
+                    print(property)
+                    print(data)
+                    data["config"][property[0]] = property[1]
+                    with open(real_dir, 'w') as w:
+                        json.dump(data, w, indent=2)
             else:
                 print('error') # detailed error handling
                 break
 
-        except:
-            print('error')
+        except Exception as e:
+            print('error', e)
 
 print('exiting')
