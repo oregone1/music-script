@@ -28,7 +28,7 @@ def list_files(file_list):
     return(_input)
 
 def play(music_dir):
-    os.system(f'mpv --no-video --speed={data["config"]["playback-speed"]} \'{music_dir}\'')
+    os.system(f'mpv --no-video --speed={int(data["config"]["back-speed"])} \'{music_dir}\'')
 
 while run:
     try:
@@ -68,9 +68,11 @@ while run:
                 elif 'edit' in user_input:
                     property = user_input.replace(f'config edit ', '')
                     property = property.split(' ')
-                    print(property)
                     print(data)
-                    data["config"][property[0]] = property[1]
+                    #if not str(property[0]) == 'config' and str(property[1]) == 'edit':
+                    print('test')
+                    data["config"][property[0]] = str(property[1])
+                    #data["config"]["playback-speed"] = "2"
                     with open(real_dir, 'w') as w:
                         json.dump(data, w, indent=2)
             else:
@@ -79,5 +81,5 @@ while run:
 
         except Exception as e:
             print('error', e)
-
+            
 print('exiting')
