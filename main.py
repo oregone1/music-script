@@ -77,21 +77,25 @@ while run:
 
     except:
         try:
-            if user_input == 'exit':
+            command = user_input.split(' ')
+
+            if command[0] == 'exit':
                 run = False
-            elif user_input.split(' ')[0] == 'play':
+
+            elif command[0] == 'play':
                 play(music_dir + '/' + _input[int(user_input.replace('play', ''))])
-            elif user_input.split(' ')[0] == 'list':
+
+            elif command[0] == 'list':
                 index = user_input.replace('list', '').split(',')
                 print(index)
                 for num in index:
                     play(music_dir + '/' + _input[int(num)])
 
-            elif user_input.split(' ')[0] == 'config':
+            elif command[0] == 'config':
                 if len(user_input) == 6:
                     for option in data['config']:
                         print(' ',option)
-                elif user_input.split(' ')[1] == 'edit':
+                elif command[1] == 'edit':
                     property = user_input.replace(f'config edit ', '')
                     property = property.split(' ')
                     print(data)
@@ -102,8 +106,11 @@ while run:
                     with open(real_dir, 'w') as w:
                         json.dump(data, w, indent=2)
 
-            elif user_input.split(' ')[0] == 'download':
+            elif command[0] == 'download':
                 download_file(user_input.replace('download', ''))
+
+            elif command[0] == 'file':
+                os.mkdir(command[1])
 
             else:
                 print('error') # detailed error handling
