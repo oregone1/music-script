@@ -34,21 +34,17 @@ def play(music_dir):
 
 def download_file(title):
 
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'webm',
-            'preferredquality': '192',
-            }]
-        }
-
     is_video = 'n'
     i = -1
 
-    if not 'https://youtube.com' in title:
+    print(f'\\\\\\ {title}')
+
+    if 'https://www.youtube.com' in title:
+        download = title
+
+    else:
         results = YoutubeSearch(title, max_results=10).to_dict()
-        print(results)
+        #print(results)
         while is_video.lower() == 'n':
             i += 1
             print(f'found {results[i]["title"]}')
@@ -56,12 +52,11 @@ def download_file(title):
 
         download = 'https://www.youtube.com' + str(results[i]['url_suffix'])
 
-    else:
-        download = title
-
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        print("Downloading audio now\n")
-        ydl.download([download])
+    try:
+        print('downloading ' + download)
+        os.system('youtube-dl -f 251 ' + str(download))
+    except:
+        print('make sure you have youtube-dl installed for this to work')
 
 while run:
     try:
