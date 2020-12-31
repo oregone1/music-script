@@ -45,13 +45,20 @@ def download_file(title):
 
     is_video = 'n'
     i = -1
-    results = YoutubeSearch(title, max_results=10).to_dict()
-    while is_video.lower() == 'n':
-        i += 1
-        print(f'found {results[i]["title"]}')
-        is_video = input('is the title correct? (y/n) ')
 
-    download = 'https://www.youtube.com' + str(results[i]['url_suffix'])
+    if not 'https://youtube.com' in title:
+        results = YoutubeSearch(title, max_results=10).to_dict()
+        print(results)
+        while is_video.lower() == 'n':
+            i += 1
+            print(f'found {results[i]["title"]}')
+            is_video = input('is the title correct? (y/n) ')
+
+        download = 'https://www.youtube.com' + str(results[i]['url_suffix'])
+
+    else:
+        download = title
+
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         print("Downloading audio now\n")
         ydl.download([download])
@@ -81,6 +88,9 @@ while run:
 
             if command[0] == 'exit':
                 run = False
+
+            if command[0] == 'help':
+                pass ## wip
 
             elif command[0] == 'play':
                 play(music_dir + '/' + _input[int(user_input.replace('play', ''))])
