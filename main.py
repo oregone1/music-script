@@ -20,6 +20,7 @@ CONFIG_LOCATION: str = os.getcwd() + '/config.json'
 with open(CONFIG_LOCATION, 'r') as f:
     json_data: dict = json.load(f)
     current_dir: str = json_data["config"]["music-dir"]
+    backup_dir: str = current_dir
 
 print("loaded config at: " + CONFIG_LOCATION)
 
@@ -44,11 +45,11 @@ def handle_ui(i: str, select_from: dict) -> Union[str, bool, IO ()]: # TODO: whe
             if command[0] == "play":
                 play(command[1].split(','), select_from)
             elif command[0] == "download":
-                download(command[1:])
+                [download(search) for search in (' '.join(command[1:])).split(',')]
             elif command[0] == "file":                                # set type shouldnt be here but it is
                 os.mkdir(command[1] if command[-1] == command[1] else str(command[1] + '-' + '-'.join(command[2:])))
             elif command[0] == "del":
-                os.system(f"rm -rf \'" + select_from[int(command[1])] + "\'") # not using os.remove as it cant delete directories
+                [os.system(f"rm -rf \'" + select_from[int(target)] + "\'") for target in (' '.join(command[1:])).split(',')] # not using os.remove as it cant delete directories
             elif command[0] == "edit":
                 edit_json(' '.join(command[1:]))
             elif command[0] == "exit":
@@ -73,6 +74,9 @@ def play(files: list, file_dict: dict) -> IO ():
         os.system(f'mpv --no-video --speed={float(json_data["config"]["back-speed"])} \'{file_dict[int(file)]}\'')
 
 def download(search: str) -> IO ():
+    print(search)
+    sleep(1)
+
     search_dict: dict = {"results":[{"title": "clear me"}]}
 
     try:
@@ -88,6 +92,7 @@ def download(search: str) -> IO ():
 
     print('downloading ' + results[select]["title"])
     os.system("youtube-dl -f 251 https://www.youtube.com" + results[select]["url_suffix"])
+    return IO () # if i remove this it breaks so dont touch
 
 def edit_json(user_input: str='') -> IO ():
     print(json_data)
@@ -113,6 +118,9 @@ while run:
     except NotADirectoryError: # take care of dumb user that tries to cd into file
         play(ui, file_addrs)
         current_dir: str = '/'.join(current_dir.split('/')[:-1])
+
+    except FileNotFoundError:
+        current_dir = backup_dir
 
     except Exception as e:
         print("uh oh something bad happened: " + str(e))
