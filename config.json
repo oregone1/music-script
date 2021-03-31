@@ -1,12 +1,6 @@
 {
   "config": {
     "music-dir": "/home/henry/Music",
-    "prompt-name": "cool-prompt: ",
-    "back-speed": "1",
-    "recognized-files": [
-      ".mp3",
-      ".webm",
-      ".wav"
-    ]
+    "back-speed": "1"
   }
 }
