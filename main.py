@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# take a shot every time you see a try block
+
 from youtube_search import YoutubeSearch
 from time import sleep
 from typing import Union
@@ -30,8 +32,8 @@ def get_dir_contents(directory: str) -> dict:
     return dict(enumerate(files))
 
 def get_input(file_addrs: dict) -> str: # parameter should be called different thing but i am lazy
-    print("-"*15)
-    [print(f"{file[0]}: {file[1]}") for file in file_addrs.items()]
+    print("-"*15) # youtube_dl downloads files as "{filename} - {url extension}" this next line changes how files display to avoid that
+    [print(f"{file[0]}: {file[1].split('-')[0] if os.path.isfile(file[1]) else file[1]}") for file in file_addrs.items()]
     print("-"*15)
     return input("-> ")
 
@@ -70,28 +72,35 @@ def handle_ui(i: str, select_from: dict) -> Union[str, bool, IO ()]: # TODO: whe
 
 def play(files: list, file_dict: dict) -> IO ():
     for file in files:
+        try: # why not use an if condition here to check if the value exists? well i tried that and it didnt work
+            json_data["songs"][file_dict[int(file)]] += 1  # and i mean i could set it up correctly but that is more
+        except:                                        # work than writing this comment and using try and except instead
+            json_data["songs"][str(file_dict[int(file)])] = 1
+        with open(CONFIG_LOCATION, 'w') as f:
+            json.dump(json_data, f, indent=2, ensure_ascii=False)
         os.system("clear")
         os.system(f'mpv --no-video --speed={float(json_data["config"]["back-speed"])} \'{file_dict[int(file)]}\'')
 
 def download(search: str) -> IO ():
-    print(search)
-    sleep(1)
+    if not "https://youtube.com" in search:
+        search_dict: dict = {"results":[{"title": "clear me"}]}
 
-    search_dict: dict = {"results":[{"title": "clear me"}]}
+        try:
+            results: dict = YoutubeSearch(' '.join(search), max_results=10).to_dict()
+            search_dict.clear()
+            print(search_dict)
+            for i in range(len(results)):
+                search_dict[i]: str = results[i]["title"].replace('\n', '')
+        except:
+            raise ConnectionError
 
-    try:
-        results: dict = YoutubeSearch(' '.join(search), max_results=10).to_dict()
-        search_dict.clear()
-        print(search_dict)
-        for i in range(len(results)):
-            search_dict[i]: str = results[i]["title"].replace('\n', '')
-    except:
-        raise ConnectionError
+        select: int = int(get_input(search_dict))
 
-    select: int = int(get_input(search_dict))
+        print('downloading ' + results[select]["title"])
+        os.system("youtube-dl -f 251 https://www.youtube.com" + results[select]["url_suffix"])
+    else:
+        os.system(f"youtube-dl -f 251 {search}")
 
-    print('downloading ' + results[select]["title"])
-    os.system("youtube-dl -f 251 https://www.youtube.com" + results[select]["url_suffix"])
     return IO () # if i remove this it breaks so dont touch
 
 def edit_json(user_input: str='') -> IO ():
